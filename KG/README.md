@@ -289,7 +289,7 @@ Run the NetworkX implementation:
 python network.py
 ```
 
-If NetworkX is not installed:
+If NetworkX is not installed (inside venv):
 
 ```bash
 pip install networkx
