@@ -1,10 +1,8 @@
 # Adversarial Game Search Algorithms
 
-## AI Assignment 4: Minimax, Alpha-Beta, Heuristic Search, and MCTS
-
 ### Objective
 
-The objective of this assignment is to implement and compare four adversarial search algorithms used in two-player zero-sum games:
+The objective is to implement and compare four adversarial search algorithms used in two-player zero-sum games:
 
 1. Minimax Search
 2. Alpha-Beta Pruning
@@ -501,7 +499,7 @@ The user can:
 
 # Conclusion
 
-This assignment successfully implements four important adversarial search algorithms and evaluates them on Tic-Tac-Toe and Connect Four.
+We have successfully implemented four important adversarial search algorithms and evaluated them on Tic-Tac-Toe and Connect Four.
 
 The results demonstrate that:
 
@@ -509,5 +507,3 @@ The results demonstrate that:
 - Alpha-Beta significantly reduces the search space while preserving optimality.
 - Heuristic Alpha-Beta enables efficient play in larger games through depth-limited search and evaluation functions.
 - MCTS provides a flexible simulation-based approach that performs effectively without handcrafted heuristics.
-
-Together, these algorithms illustrate different strategies for decision-making in adversarial environments and highlight the trade-offs between optimality, efficiency, and scalability.
