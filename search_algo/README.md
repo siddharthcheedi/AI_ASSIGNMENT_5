@@ -1,199 +1,20 @@
 # Adversarial Game Search Algorithms
 
-### Objective
+## Overview
 
-The objective is to implement and compare four adversarial search algorithms used in two-player zero-sum games:
+This project implements four AI search algorithms used for decision-making in two-player games:
 
 1. Minimax Search
 2. Alpha-Beta Pruning
 3. Heuristic Alpha-Beta Search
 4. Monte-Carlo Tree Search (MCTS)
 
-These algorithms are evaluated on the following games:
+These algorithms are tested using two classic games:
 
-- Tic-Tac-Toe (3×3)
-- Connect Four (6×7)
+- Tic-Tac-Toe
+- Connect Four
 
----
-
-# Algorithms Implemented
-
-## 1. Minimax Search
-
-Minimax is a classical adversarial search algorithm for two-player zero-sum games.
-
-The algorithm assumes:
-
-- MAX attempts to maximize the utility.
-- MIN attempts to minimize the utility.
-
-At each state:
-
-- If the state is terminal, return its utility.
-- MAX chooses the action with the highest value.
-- MIN chooses the action with the lowest value.
-
-### Advantages
-
-- Guarantees optimal play.
-- Complete for finite game trees.
-
-### Limitations
-
-- Computationally expensive.
-- Time complexity grows exponentially.
-
-### Complexity
-
-```text
-Time: O(b^d)
-Space: O(d)
-```
-
-where:
-
-- b = branching factor
-- d = depth of game tree
-
----
-
-## 2. Alpha-Beta Pruning
-
-Alpha-Beta pruning is an optimization of Minimax.
-
-It eliminates branches that cannot affect the final decision while still returning the same optimal move as Minimax.
-
-### Definitions
-
-- α (Alpha): Best value MAX can guarantee.
-- β (Beta): Best value MIN can guarantee.
-
-Pruning occurs whenever:
-
-```text
-α ≥ β
-```
-
-### Advantages
-
-- Produces the same result as Minimax.
-- Explores significantly fewer nodes.
-- Faster in practice.
-
-### Complexity
-
-Worst Case:
-
-```text
-O(b^d)
-```
-
-Best Case:
-
-```text
-O(b^(d/2))
-```
-
----
-
-## 3. Heuristic Alpha-Beta Search
-
-For larger games such as Connect Four, searching the entire game tree is impractical.
-
-The solution is to:
-
-1. Limit search depth.
-2. Use a heuristic evaluation function.
-
-### Move Ordering
-
-Move ordering improves pruning efficiency.
-
-#### Tic-Tac-Toe
-
-Priority:
-
-1. Center
-2. Corners
-3. Edges
-
-#### Connect Four
-
-Priority:
-
-- Center columns first
-- Then outward columns
-
-### Evaluation Function
-
-#### Tic-Tac-Toe
-
-| Pattern | Score |
-|----------|--------|
-| 3 player pieces | +100000 |
-| 2 player + 1 empty | +10 |
-| 1 player + 2 empty | +1 |
-| 3 opponent pieces | -100000 |
-| 2 opponent + 1 empty | -10 |
-| 1 opponent + 2 empty | -1 |
-
-#### Connect Four
-
-| Pattern | Score |
-|----------|--------|
-| 3 player + 1 empty | +50 |
-| 2 player + 2 empty | +10 |
-| 3 opponent + 1 empty | -100 |
-| 2 opponent + 2 empty | -10 |
-| Center column piece | +4 |
-
-### Advantages
-
-- Much faster than full Minimax.
-- Suitable for larger game spaces.
-- Provides strong practical performance.
-
----
-
-## 4. Monte-Carlo Tree Search (MCTS)
-
-MCTS builds a search tree dynamically using random simulations.
-
-Unlike Alpha-Beta, it does not require a handcrafted heuristic.
-
-### Four Phases
-
-#### 1. Selection
-
-Choose the most promising child using:
-
-```text
-UCT = Q/N + C * sqrt(ln(parent_visits)/N)
-```
-
-where:
-
-- Q = total reward
-- N = visit count
-- C = exploration constant
-
-#### 2. Expansion
-
-Expand a previously unexplored node.
-
-#### 3. Simulation
-
-Play random moves until a terminal state is reached.
-
-#### 4. Backpropagation
-
-Update statistics from the simulation result back to the root.
-
-### Advantages
-
-- Works well for large state spaces.
-- Requires little domain knowledge.
-- Balances exploration and exploitation automatically.
+The objective is to compare different approaches for finding the best move in a game while balancing accuracy and efficiency.
 
 ---
 
@@ -201,68 +22,181 @@ Update statistics from the simulation result back to the root.
 
 ## game.py
 
-Contains game implementations and state management.
+This file contains the game logic.
 
 Responsibilities:
 
-- State representation
+- Board representation
 - Legal move generation
-- State transitions
+- Applying moves
 - Win detection
 - Draw detection
+- Terminal state checking
 
 Games implemented:
 
-- TicTacToeState
-- ConnectFourState
+- Tic-Tac-Toe
+- Connect Four
 
 ---
 
 ## search.py
 
-Contains implementations of:
+This file contains implementations of all search algorithms.
 
-- Minimax Search
-- Alpha-Beta Search
-- Heuristic Alpha-Beta Search
-- Monte-Carlo Tree Search
+Implemented algorithms:
+
+- Minimax
+- Alpha-Beta Pruning
+- Heuristic Alpha-Beta
+- Monte-Carlo Tree Search (MCTS)
+
+The algorithms use the game states provided by `game.py` to determine the best move.
 
 ---
 
 ## testcases.py
 
-Contains automated test cases for:
+This file contains test cases used to verify:
 
-- Game mechanics
-- Terminal state detection
+- Correct game mechanics
+- Win detection
+- Draw detection
 - Search algorithm correctness
-- Offensive and defensive move selection
+- Offensive move selection
+- Defensive move selection
+
+---
+
+# Algorithms Implemented
+
+## 1. Minimax Search
+
+Minimax is a decision-making algorithm for two-player zero-sum games.
+
+The idea is:
+
+- MAX player tries to maximize the score.
+- MIN player tries to minimize the score.
+
+The algorithm explores all possible future moves and chooses the optimal one.
+
+### Advantages
+
+- Guarantees optimal play.
+- Easy to understand.
+
+### Limitations
+
+- Slow for large game trees.
+- Explores many unnecessary states.
+
+---
+
+## 2. Alpha-Beta Pruning
+
+Alpha-Beta is an optimized version of Minimax.
+
+It avoids exploring branches that cannot affect the final decision.
+
+### Advantages
+
+- Returns the same result as Minimax.
+- Searches fewer states.
+- Faster execution.
+
+---
+
+## 3. Heuristic Alpha-Beta Search
+
+For larger games like Connect Four, searching the complete game tree is impractical.
+
+This approach:
+
+- Limits search depth.
+- Uses a heuristic evaluation function to estimate board quality.
+
+The evaluation function rewards:
+
+- Winning opportunities
+- Good board positions
+- Blocking opponent threats
+
+### Advantages
+
+- Much faster than full search.
+- Suitable for larger games.
+
+---
+
+## 4. Monte-Carlo Tree Search (MCTS)
+
+MCTS chooses moves using repeated simulations.
+
+The algorithm repeatedly:
+
+1. Selects a promising node.
+2. Expands the tree.
+3. Simulates a random game.
+4. Updates statistics.
+
+The move with the best simulation results is selected.
+
+### Advantages
+
+- Does not require a handcrafted evaluation function.
+- Works well in large search spaces.
+
+---
+
+# Features
+
+- Full Minimax implementation
+- Alpha-Beta optimization
+- Heuristic search support
+- Monte-Carlo Tree Search
+- Tic-Tac-Toe support
+- Connect Four support
+- Interactive gameplay
+- Automated testing
+
+---
+
+# How the System Works
+
+1. The game state is initialized.
+2. Legal moves are generated.
+3. The selected search algorithm evaluates possible moves.
+4. The best move is chosen.
+5. The game state is updated.
+6. The process repeats until the game ends.
 
 ---
 
 # Test Cases and Correctness Verification
 
-To verify correctness, a comprehensive set of test cases was designed for both games.
+The following test cases were used to verify the correctness of the implementation.
 
 ## Tic-Tac-Toe Test Cases
 
 ### Test Case 1: Initial State Validation
 
-**Objective:** Verify that a newly initialized board is valid.
+**Objective:**
+Verify that a new game starts correctly.
 
 **Checks:**
+
 - Board contains 9 empty cells.
 - Player X starts first.
-- State is not terminal.
-- Exactly 9 legal moves exist.
+- State is non-terminal.
+- 9 legal moves exist.
 
-**Expected Result:** All conditions hold.
+**Expected Result:**
+All conditions hold.
 
 ---
 
 ### Test Case 2: Win Detection
-
-**Objective:** Verify correct detection of a winning state.
 
 **Board:**
 
@@ -273,17 +207,16 @@ O O .
 ```
 
 **Checks:**
+
 - State is terminal.
 - Winner is X.
-- Utility value corresponds to a win.
 
-**Expected Result:** Win detected correctly.
+**Expected Result:**
+Win detected correctly.
 
 ---
 
 ### Test Case 3: Draw Detection
-
-**Objective:** Verify correct detection of draw states.
 
 **Board:**
 
@@ -294,17 +227,17 @@ O X X
 ```
 
 **Checks:**
-- Board is full.
-- No winner exists.
+
+- Board full.
+- No winner.
 - State is terminal.
 
-**Expected Result:** Draw detected correctly.
+**Expected Result:**
+Draw detected correctly.
 
 ---
 
 ### Test Case 4: Immediate Winning Move
-
-**Objective:** Verify that algorithms select an available winning move.
 
 **Board:**
 
@@ -314,21 +247,22 @@ O O .
 . . .
 ```
 
-**Expected Move:** Cell 2
+**Expected Move:**
+Cell 2
 
 **Algorithms Tested:**
+
 - Minimax
 - Alpha-Beta
 - Heuristic Alpha-Beta
 - MCTS
 
-**Expected Result:** Winning move selected.
+**Expected Result:**
+Winning move selected.
 
 ---
 
 ### Test Case 5: Defensive Blocking
-
-**Objective:** Verify that algorithms block an opponent's immediate win.
 
 **Board:**
 
@@ -338,15 +272,18 @@ X . .
 . X .
 ```
 
-**Expected Move:** Cell 2
+**Expected Move:**
+Cell 2
 
 **Algorithms Tested:**
+
 - Minimax
 - Alpha-Beta
 - Heuristic Alpha-Beta
 - MCTS
 
-**Expected Result:** Blocking move selected.
+**Expected Result:**
+Blocking move selected.
 
 ---
 
@@ -354,22 +291,20 @@ X . .
 
 ### Test Case 6: Piece Drop Physics
 
-**Objective:** Verify gravity mechanics.
-
-**Procedure:**
-- Drop a piece into an empty column.
+**Objective:**
+Verify gravity mechanics.
 
 **Checks:**
-- Piece lands in the lowest available position.
+
+- Piece falls to lowest available position.
 - Turn changes correctly.
 
-**Expected Result:** Correct piece placement.
+**Expected Result:**
+Correct piece placement.
 
 ---
 
 ### Test Case 7: Horizontal Win Detection
-
-**Objective:** Verify horizontal four-in-a-row detection.
 
 **Configuration:**
 
@@ -379,13 +314,12 @@ X X X X
 
 on the same row.
 
-**Expected Result:** Win detected.
+**Expected Result:**
+Win detected.
 
 ---
 
 ### Test Case 8: Vertical Win Detection
-
-**Objective:** Verify vertical four-in-a-row detection.
 
 **Configuration:**
 
@@ -398,39 +332,38 @@ X
 
 in the same column.
 
-**Expected Result:** Win detected.
+**Expected Result:**
+Win detected.
 
 ---
 
 ### Test Case 9: Immediate Winning Move
 
-**Objective:** Verify that algorithms select a direct winning move.
-
-**Configuration:**
-- Three connected pieces already exist.
-- One move completes four-in-a-row.
+**Objective:**
+Verify that algorithms choose a winning move.
 
 **Algorithms Tested:**
+
 - Heuristic Alpha-Beta
 - MCTS
 
-**Expected Result:** Winning column selected.
+**Expected Result:**
+Winning column selected.
 
 ---
 
 ### Test Case 10: Defensive Blocking
 
-**Objective:** Verify that algorithms block an opponent's winning threat.
-
-**Configuration:**
-- Opponent has three connected pieces.
-- One move remains for victory.
+**Objective:**
+Verify that algorithms block an opponent's winning move.
 
 **Algorithms Tested:**
+
 - Heuristic Alpha-Beta
 - MCTS
 
-**Expected Result:** Threat is blocked.
+**Expected Result:**
+Threat is blocked.
 
 ---
 
@@ -442,22 +375,22 @@ in the same column.
 | Connect Four | 5 |
 | Total | 10 |
 
-The test suite verifies:
+The tests verify:
 
-- Correct game mechanics
+- Game mechanics
 - Legal move generation
 - Win detection
 - Draw detection
 - Terminal state recognition
-- Optimal move selection
-- Defensive move selection
-- Correctness of all implemented search algorithms
+- Correct search decisions
+- Offensive play
+- Defensive play
 
 ---
 
 # Running the Project
 
-## Run All Tests
+Run all tests:
 
 ```bash
 python testcases.py
@@ -469,41 +402,23 @@ or
 python Search_Algos/testcases.py
 ```
 
-## Run Specific Test Groups
-
-Tic-Tac-Toe only:
-
-```bash
-python testcases.py ttt
-```
-
-Connect Four only:
-
-```bash
-python testcases.py c4
-```
-
-## Run Interactive Mode
+Run interactive mode:
 
 ```bash
 python testcases.py play
 ```
 
-The user can:
-
-- Play Tic-Tac-Toe or Connect Four.
-- Choose turn order.
-- Select Minimax, Alpha-Beta, Heuristic Alpha-Beta, or MCTS as the AI opponent.
-
 ---
 
 # Conclusion
 
-We have successfully implemented four important adversarial search algorithms and evaluated them on Tic-Tac-Toe and Connect Four.
+This project demonstrates the implementation of four important AI search algorithms used in adversarial games.
 
-The results demonstrate that:
+The results show that:
 
-- Minimax guarantees optimal play but is computationally expensive.
-- Alpha-Beta significantly reduces the search space while preserving optimality.
-- Heuristic Alpha-Beta enables efficient play in larger games through depth-limited search and evaluation functions.
-- MCTS provides a flexible simulation-based approach that performs effectively without handcrafted heuristics.
+- Minimax provides optimal decisions but is computationally expensive.
+- Alpha-Beta significantly reduces unnecessary search.
+- Heuristic Alpha-Beta makes larger games manageable.
+- MCTS provides a flexible simulation-based approach for decision making.
+
+Together, these algorithms demonstrate different techniques for solving game-playing problems in Artificial Intelligence.
